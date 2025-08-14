@@ -70,7 +70,6 @@
 | -------               | ---------- | ------------------------------ |
 | postal_code           | string     | null: false                    |
 | shipping_from_id      | integer    | null: false                    |
-| genre_id              | integer    | null: false                    |
 | city                  | string     | null: false                    |
 | address               | string     | null: false                    |
 | building              | string     |                                |
