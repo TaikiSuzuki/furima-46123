@@ -52,6 +52,12 @@ RSpec.describe User, type: :model do
       end
 
       # パスワード関連のバリデーション
+      it 'パスワードが6文字未満では登録できないこと' do
+        @user.password = '123ab'
+        @user.password_confirmation = '123ab'
+        expect(@user).to_not be_valid
+      end
+
       it 'パスワードが数字のみでは登録できないこと' do
         @user.password = '123456'
         @user.password_confirmation = '123456'
