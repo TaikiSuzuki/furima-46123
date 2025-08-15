@@ -3,49 +3,120 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   describe 'バリデーション' do
-    # すべての項目が正しく入力されていれば有効
-    it 'is valid with all required attributes' do
-      user = FactoryBot.build(:user)
-      expect(user).to be_valid
+    before do
+      @user = FactoryBot.build(:user)
     end
-
-    # 必須項目のテスト
-    it 'is not valid without a nickname' do
-      user = FactoryBot.build(:user, nickname: nil)
-      expect(user).to_not be_valid
+    
+    # 正常系のテスト
+    context '正常系' do
+      it 'すべての項目が正しく入力されていれば有効な状態であること' do
+        expect(@user).to be_valid
+      end
     end
+    
+    # 異常系のテスト
+    context '異常系' do
+      # 各必須項目が空のときに登録できないこと
+      it 'nicknameが空では登録できないこと' do
+        @user.nickname = nil
+        expect(@user).to_not be_valid
+      end
+      
+      it 'emailが空では登録できないこと' do
+        @user.email = nil
+        expect(@user).to_not be_valid
+      end
+      
+      it 'passwordが空では登録できないこと' do
+        @user.password = nil
+        expect(@user).to_not be_valid
+      end
 
-    it 'is not valid without an email' do
-      user = FactoryBot.build(:user, email: nil)
-      expect(user).to_not be_valid
-    end
+      it 'password_confirmationがpasswordと一致しない場合は登録できないこと' do
+        @user.password = '123456'
+        @user.password_confirmation = '1234567'
+        expect(@user).to_not be_valid
+      end
 
-    it 'is not valid without a password' do
-      user = FactoryBot.build(:user, password: nil)
-      expect(user).to_not be_valid
-    end
+      # 重複したemailでは登録できないこと
+      it '重複したemailでは登録できないこと' do
+        FactoryBot.create(:user, email: @user.email)
+        @user.valid?
+        expect(@user.errors.full_messages).to include("Email has already been taken")
+      end
 
-    # パスワードのバリデーション
-    it 'is not valid with a password shorter than 6 characters' do
-      user = FactoryBot.build(:user, password: '123ab')
-      expect(user).to_not be_valid
-    end
+      # emailに@を含まない場合は登録できないこと
+      it 'emailに@を含まない場合は登録できないこと' do
+        @user.email = 'testmail.com'
+        expect(@user).to_not be_valid
+      end
 
-    it 'is not valid with a password that is not a mix of numbers and letters' do
-      user = FactoryBot.build(:user, password: 'abcdef')
-      expect(user).to_not be_valid
-    end
+      # パスワード関連のバリデーション
+      it 'パスワードが数字のみでは登録できないこと' do
+        @user.password = '123456'
+        @user.password_confirmation = '123456'
+        expect(@user).to_not be_valid
+      end
 
-    # 氏名（全角）のバリデーション
-    it 'is not valid with non-kanji/hiragana/katakana last_name' do
-      user = FactoryBot.build(:user, last_name: 'tanaka')
-      expect(user).to_not be_valid
-    end
+      it 'パスワードが英字のみでは登録できないこと' do
+        @user.password = 'abcdef'
+        @user.password_confirmation = 'abcdef'
+        expect(@user).to_not be_valid
+      end
 
-    # フリガナ（全角カタカナ）のバリデーション
-    it 'is not valid with non-katakana last_name_kana' do
-      user = FactoryBot.build(:user, last_name_kana: 'やまだ')
-      expect(user).to_not be_valid
+      it 'パスワードに全角文字が含まれる場合は登録できないこと' do
+        @user.password = 'あ12345'
+        @user.password_confirmation = 'あ12345'
+        expect(@user).to_not be_valid
+      end
+
+      # 各必須項目が空のときに登録できないこと
+      it 'last_nameが空では登録できないこと' do
+        @user.last_name = nil
+        expect(@user).to_not be_valid
+      end
+
+      it 'first_nameが空では登録できないこと' do
+        @user.first_name = nil
+        expect(@user).to_not be_valid
+      end
+
+      it 'last_name_kanaが空では登録できないこと' do
+        @user.last_name_kana = nil
+        expect(@user).to_not be_valid
+      end
+
+      it 'first_name_kanaが空では登録できないこと' do
+        @user.first_name_kana = nil
+        expect(@user).to_not be_valid
+      end
+
+      it 'birth_dateが空では登録できないこと' do
+        @user.birth_date = nil
+        expect(@user).to_not be_valid
+      end
+
+      # 氏名（漢字・ひらがな・カタカナ以外）のバリデーション
+      it 'last_nameが全角（漢字・ひらがな・カタカナ）でなければ登録できないこと' do
+        @user.last_name = 'tanaka'
+        expect(@user).to_not be_valid
+      end
+
+      it 'first_nameが全角（漢字・ひらがな・カタカナ）でなければ登録できないこと' do
+        @user.first_name = 'tarou'
+        expect(@user).to_not be_valid
+      end
+
+      # フリガナ（全角カタカナ以外）のバリデーション
+      it 'last_name_kanaが全角カタカナでなければ登録できないこと' do
+        @user.last_name_kana = 'やまだ'
+        expect(@user).to_not be_valid
+      end
+
+      it 'first_name_kanaが全角カタカナでなければ登録できないこと' do
+        @user.first_name_kana = 'たろう'
+        expect(@user).to_not be_valid
+      end
     end
   end
 end
