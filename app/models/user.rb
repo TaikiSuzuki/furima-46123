@@ -4,6 +4,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  # アソシエーション
+  has_many :items
+  
   # パスワードのバリデーション
   PASSWORD_REGEX = /\A(?=.*?[a-z])(?=.*?\d)[a-z\d]{6,}\z/i.freeze
   validates_format_of :password, with: PASSWORD_REGEX, message: 'は半角英数字混合で設定してください'
