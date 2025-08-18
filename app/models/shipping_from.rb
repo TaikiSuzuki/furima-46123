@@ -1,6 +1,6 @@
 # app/models/shipping_from.rb
 
-class Shipping_From < ActiveHash::Base
+class ShippingFrom < ActiveHash::Base
   self.data = [
     { id: 1, name: '---' },
     { id: 2, name: '北海道' },

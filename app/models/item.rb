@@ -2,11 +2,11 @@ require 'active_hash'
 
 class Item < ApplicationRecord
   extend ActiveHash::Associations::ActiveRecordExtensions
-  belongs_to :category
-  belongs_to :condition
-  belongs_to :days_to_ship
-  belongs_to :shipping_fee_payer
-  belongs_to :shipping_from
+  belongs_to :Category
+  belongs_to :Condition
+  belongs_to :DaysToShip
+  belongs_to :ShippingFeePayer
+  belongs_to :ShippingFrom
 
   belongs_to :user
   has_one_attached :image
