@@ -30,7 +30,7 @@ RSpec.describe Item, type: :model do
         @item.valid?
         expect(@item.errors.full_messages).to include("Description can't be blank")
       end
-
+      
       it 'カテゴリーが「---」だと保存できない' do
         @item.category_id = 1
         @item.valid?
@@ -60,7 +60,7 @@ RSpec.describe Item, type: :model do
         @item.valid?
         expect(@item.errors.full_messages).to include("Days to ship を選択してください")
       end
-      
+
       it '価格がないと保存できない' do
         @item.price = nil
         @item.valid?
@@ -83,6 +83,12 @@ RSpec.describe Item, type: :model do
         @item.price = 'abc'
         @item.valid?
         expect(@item.errors.full_messages).to include("Price is not a number")
+      end
+
+      it 'userが紐づいていなければ保存できない' do
+        @item.user = nil
+        @item.valid?
+        expect(@item.errors.full_messages).to include("User must exist")
       end
     end
   end
