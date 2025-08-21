@@ -31,7 +31,7 @@
 
     <%# 商品が売れていない場合はこちらを表示しましょう %>
     <% elsif user_signed_in? && current_user.id != @item.user_id %>
-      <%= link_to "購入画面に進む", "#" ,class:"item-red-btn"%>
+      <%= link_to "購入画面に進む", item_orders_path(@item) , data: { turbo: false }, class:"item-red-btn"%>
     <% end %>
 
     <div class="item-explain-box">
@@ -57,7 +57,8 @@
         </tr>
         <tr>
           <th class="detail-item">発送元の地域</th>
-          <td class="detail-value"><%= @item.shipping_from.name %></td>
+           <%# 名前変更のため %>
+          <td class="detail-value"><%= @item.prefecture.name %></td>
         </tr>
         <tr>
           <th class="detail-item">発送日の目安</th>
