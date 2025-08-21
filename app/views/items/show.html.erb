@@ -30,6 +30,7 @@
     <%= link_to "削除", item_path(@item), data: {turbo_method: :delete}, class:"item-destroy" %>
 
     <%# 商品が売れていない場合はこちらを表示しましょう %>
+        <%# 商品が売れていない場合はこちらを表示しましょう %>
     <% elsif user_signed_in? && current_user.id != @item.user_id %>
       <%= link_to "購入画面に進む", item_orders_path(@item) , data: { turbo: false }, class:"item-red-btn"%>
     <% end %>

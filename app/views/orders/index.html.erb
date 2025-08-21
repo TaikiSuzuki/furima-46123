@@ -3,8 +3,8 @@
 <div class='transaction-contents'>
   <div class='transaction-main'>
   
-  <%= form_with model: @order_shipping_form, url: item_orders_path(@item), id: 'charge-form', class: 'transaction-form-wrap', local: true do |f| %>
-  <%= render "shared/error_messages", model: f.object %>
+  <%= form_with model: @order_shipping_form, url: item_orders_path(@item), id: 'charge-form', class: 'transaction-form-wrap', local: true, data: { turbo: false } do |f| %>
+    <%= render "shared/error_messages", model: f.object %>
     <h1 class='transaction-title-text'>
       購入内容の確認
     </h1>
@@ -34,8 +34,6 @@
       </p>
     </div>
     <%# /支払額の表示 %>
-
-    <%= form_with model: @order_shipping_form, url: item_orders_path(@item), id: 'charge-form', class: 'transaction-form-wrap', local: true do |f| %>
 
     <%# カード情報の入力 %>
     <div class='credit-card-form'>
@@ -126,7 +124,6 @@
     <div class='buy-btn'>
       <%= f.submit "購入" ,class:"buy-red-btn", id:"button" %>
     </div>
-    <% end %>
   <% end %>
   </div>
 

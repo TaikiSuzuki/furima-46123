@@ -1,7 +1,7 @@
 class OrdersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_item, only: [:index, :create]
-
+  before_action :prevent_purchase_if_sold_or_seller, only: [:index]
   def index
     @order_shipping_form = OrderShippingForm.new
   end
@@ -29,6 +29,13 @@ class OrdersController < ApplicationController
 
   private
   
+  def prevent_purchase_if_sold_or_seller
+    # 商品が売却済みの場合、または出品者が購入ページに遷移しようとした場合
+    if @item.order || @item.user_id == current_user.id
+      redirect_to root_path
+    end
+  end
+
   def set_item
     @item = Item.find(params[:item_id])
   end
