@@ -12,16 +12,3 @@ FactoryBot.define do
     birth_date            {'1990-01-01'} 
   end
 end
-
-# spec/factories/order_shipping_forms.rb
-FactoryBot.define do
-  factory :order_shipping_form do
-    # ... 有効なフォーム入力値の定義
-    token             { 'tok_abcdefghijklmnopqrstuvwxyz' }
-    postal_code       { '123-4567' }
-    shipping_from_id  { 2 }
-    city              { '横浜市緑区' }
-    address           { '青山1-1-1' }
-    phone_number      { '09012345678' }
-  end
-end
