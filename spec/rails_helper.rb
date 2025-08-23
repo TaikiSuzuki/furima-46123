@@ -35,39 +35,35 @@ RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
-  # トランザクションの使用を無効化する
   config.use_transactional_fixtures = false
 
   config.include FactoryBot::Syntax::Methods
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :request
 
-  # テストスイート実行前に全てのテーブルを空にする
   config.before(:suite) do
-    # 外部キー制約を無効化
-    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS = 0')
-    
-    # `truncate_all_tables` がない場合に手動でクリーンアップする処理
-    tables = ActiveRecord::Base.connection.tables
-    tables.each do |table|
-      ActiveRecord::Base.connection.execute("TRUNCATE TABLE `#{table}`") unless ['schema_migrations', 'ar_internal_metadata'].include?(table)
-    end
+    ActiveRecord::Base.connection.execute("SET FOREIGN_KEY_CHECKS = 1;")
   end
 
-  # テストスイート実行後に外部キー制約を元に戻す
-  config.after(:suite) do
-    # 外部キー制約を有効化
-    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS = 1')
-  end
+  # **手動でTRUNCATEしていた以下のブロックを削除**
+  # config.before(:suite) do
+  #   ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS = 0')
+  #   tables = ActiveRecord::Base.connection.tables
+  #   tables.each do |table|
+  #     ActiveRecord::Base.connection.execute("TRUNCATE TABLE `#{table}`") unless ['schema_migrations', 'ar_internal_metadata'].include?(table)
+  #   end
+  # end
 
-  # 各テストケースの前にデータベースをクリーンアップする
-  config.before(:each) do
-    # `truncate_all_tables` がない場合に手動でクリーンアップする処理
-    tables = ActiveRecord::Base.connection.tables
-    tables.each do |table|
-      ActiveRecord::Base.connection.execute("TRUNCATE TABLE `#{table}`") unless ['schema_migrations', 'ar_internal_metadata'].include?(table)
-    end
-  end
+  # config.after(:suite) do
+  #   ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS = 1')
+  # end
+
+  # config.before(:each) do
+  #   tables = ActiveRecord::Base.connection.tables
+  #   tables.each do |table|
+  #     ActiveRecord::Base.connection.execute("TRUNCATE TABLE `#{table}`") unless ['schema_migrations', 'ar_internal_metadata'].include?(table)
+  #   end
+  # end
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
@@ -79,9 +75,9 @@ RSpec.configure do |config|
   # You can disable this behaviour by removing the line below, and instead
   # explicitly tag your specs with their type, e.g.:
   #
-  #      RSpec.describe UsersController, type: :controller do
-  #        # ...
-  #      end
+  #       RSpec.describe UsersController, type: :controller do
+  #         # ...
+  #       end
   #
   # The different available types are documented in the features, such as in
   # https://relishapp.com/rspec/rspec-rails/docs
