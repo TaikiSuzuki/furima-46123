@@ -6,10 +6,11 @@ class Item < ApplicationRecord
   belongs_to :condition
   belongs_to :days_to_ship
   belongs_to :shipping_fee_payer
-  belongs_to :shipping_from
+  belongs_to :prefecture, class_name: 'Prefecture', foreign_key: 'shipping_from_id'
 
   belongs_to :user
   has_one_attached :image
+  has_one :order
 
   with_options numericality: { other_than: 1, message: "を選択してください" } do
     validates :category_id

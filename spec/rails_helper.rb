@@ -30,14 +30,40 @@ rescue ActiveRecord::PendingMigrationError => e
   puts e.to_s.strip
   exit 1
 end
+
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
-  # If you're not using ActiveRecord, or you'd prefer not to run each of your
-  # examples within a transaction, remove the following line or assign false
-  # instead of true.
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
+
+  config.include FactoryBot::Syntax::Methods
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :request
+
+  config.before(:suite) do
+    ActiveRecord::Base.connection.execute("SET FOREIGN_KEY_CHECKS = 1;")
+  end
+
+  # **手動でTRUNCATEしていた以下のブロックを削除**
+  # config.before(:suite) do
+  #   ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS = 0')
+  #   tables = ActiveRecord::Base.connection.tables
+  #   tables.each do |table|
+  #     ActiveRecord::Base.connection.execute("TRUNCATE TABLE `#{table}`") unless ['schema_migrations', 'ar_internal_metadata'].include?(table)
+  #   end
+  # end
+
+  # config.after(:suite) do
+  #   ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS = 1')
+  # end
+
+  # config.before(:each) do
+  #   tables = ActiveRecord::Base.connection.tables
+  #   tables.each do |table|
+  #     ActiveRecord::Base.connection.execute("TRUNCATE TABLE `#{table}`") unless ['schema_migrations', 'ar_internal_metadata'].include?(table)
+  #   end
+  # end
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
@@ -49,9 +75,9 @@ RSpec.configure do |config|
   # You can disable this behaviour by removing the line below, and instead
   # explicitly tag your specs with their type, e.g.:
   #
-  #     RSpec.describe UsersController, type: :controller do
-  #       # ...
-  #     end
+  #       RSpec.describe UsersController, type: :controller do
+  #         # ...
+  #       end
   #
   # The different available types are documented in the features, such as in
   # https://relishapp.com/rspec/rspec-rails/docs

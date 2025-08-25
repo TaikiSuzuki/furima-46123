@@ -134,10 +134,14 @@
         <li class='list'>
           <%= link_to item_path(item) do %>
             <div class='item-img-content'>
-                <% if item.image.attached? %>
-                 <%= image_tag item.image, class: "item-img" %>
-                  <%# 商品が売れていればsold outを表示（購入機能が実装された後に追加） %>
-                <% end %>
+              <% if item.image.attached? %>
+                <%= image_tag item.image, class: "item-img" %>
+              <% end %>
+              <% if item.order.present? %>
+                <div class="sold-out">
+                  <span>Sold Out!!</span>
+                </div>
+              <% end %>
             </div>
             <div class='item-info'>
               <h3 class='item-name'>
