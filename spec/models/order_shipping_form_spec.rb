@@ -7,17 +7,10 @@ RSpec.describe OrderShippingForm, type: :model do
   
   # 有効なパラメータ
   let(:valid_params) do
-    {
+    FactoryBot.attributes_for(:order_shipping_form).merge(
       user_id: user.id,
       item_id: item.id,
-      token: "tok_abcdefghijklmnopqrstuvwxyz",
-      postal_code: "123-4567",
-      shipping_from_id: 2,
-      city: "横浜市緑区",
-      address: "青山1-1-1",
-      building: "柳ビル103",
-      phone_number: "09012345678"
-    }
+    )
   end
 
   # 正常系テスト
@@ -28,9 +21,16 @@ RSpec.describe OrderShippingForm, type: :model do
         expect(form).to be_valid
         expect { form.save }.to change(Order, :count).by(1).and change(ShippingAddress, :count).by(1)
       end
+
+      # 建物名は空でも保存できること
+      it '建物名は空でも保存できること' do
+        form = OrderShippingForm.new(valid_params.merge(building: nil))
+        expect(form).to be_valid
+      end
     end
   end
 
+  
   # 異常系テスト
   describe '異常系' do
     # 必須項目に関するテスト
